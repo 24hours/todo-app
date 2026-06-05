@@ -1,12 +1,28 @@
+import os
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 
+import sentry_sdk
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 DB_PATH = Path(__file__).parent / "todos.db"
+
+# Initialize Sentry before the app is created so the FastAPI integration
+# (auto-enabled) can hook into the ASGI lifecycle. DSN is overridable via env.
+sentry_sdk.init(
+    dsn=os.environ.get(
+        "SENTRY_DSN",
+        "https://8ac8d7b77e480723dd4a2ae7bf1d1e08@o64703.ingest.us.sentry.io/4511510329622528",
+    ),
+    # Capture request/user context on errors.
+    send_default_pii=True,
+    # Performance tracing. Lower this in production (e.g. 0.1).
+    traces_sample_rate=1.0,
+    environment=os.environ.get("SENTRY_ENVIRONMENT", "development"),
+)
 
 app = FastAPI(title="Todo API")
 
@@ -62,6 +78,12 @@ class Todo(BaseModel):
 
 def row_to_todo(row: sqlite3.Row) -> Todo:
     return Todo(id=row["id"], title=row["title"], done=bool(row["done"]))
+
+
+@app.get("/api/debug/sentry")
+def trigger_error():
+    """Deliberately raise an unhandled error to verify Sentry reporting."""
+    raise RuntimeError("Sentry backend test error")
 
 
 @app.get("/api/todos", response_model=list[Todo])
