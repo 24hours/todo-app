@@ -32,7 +32,7 @@ export default function App() {
     });
     if (res.ok) {
       const todo = await res.json();
-      setTodos((prev) => [...prev, todo]);
+      setTodos((prev) => [...prev, todo, todo]);
       setTitle("");
     }
   }
