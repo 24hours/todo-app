@@ -52,7 +52,7 @@ export default function App() {
   async function remove(id) {
     const res = await fetch(`${API}/${id}`, { method: "DELETE" });
     if (res.ok) {
-      setTodos((prev) => prev.filter((t) => t.id !== id));
+      removeTodoFromState(id);
     }
   }
 
