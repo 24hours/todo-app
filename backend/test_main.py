@@ -22,7 +22,12 @@ def test_create_then_list(client):
     res = client.post("/api/todos", json={"title": "buy milk"})
     assert res.status_code == 201
     todo = res.json()
-    assert todo == {"id": todo["id"], "title": "buy milk", "done": False}
+    assert todo == {
+        "id": todo["id"],
+        "title": "buy milk",
+        "done": False,
+        "color": main.DEFAULT_COLOR,
+    }
 
     res = client.get("/api/todos")
     assert [t["title"] for t in res.json()] == ["buy milk"]
@@ -59,3 +64,44 @@ def test_delete(client):
 
 def test_delete_missing_returns_404(client):
     assert client.delete("/api/todos/999").status_code == 404
+
+
+def test_create_with_color(client):
+    color = main.COLORS[3]
+    todo = client.post("/api/todos", json={"title": "tagged", "color": color}).json()
+    assert todo["color"] == color
+
+
+def test_create_with_unknown_color_falls_back_to_default(client):
+    todo = client.post("/api/todos", json={"title": "x", "color": "#123456"}).json()
+    assert todo["color"] == main.DEFAULT_COLOR
+
+
+def test_patch_color(client):
+    todo = client.post("/api/todos", json={"title": "x"}).json()
+    new = main.COLORS[5]
+    res = client.patch(f"/api/todos/{todo['id']}", json={"color": new})
+    assert res.status_code == 200
+    assert res.json()["color"] == new
+
+
+def test_patch_unknown_color_rejected(client):
+    todo = client.post("/api/todos", json={"title": "x"}).json()
+    assert client.patch(f"/api/todos/{todo['id']}", json={"color": "#000"}).status_code == 400
+
+
+def test_reorder(client):
+    a = client.post("/api/todos", json={"title": "a"}).json()
+    b = client.post("/api/todos", json={"title": "b"}).json()
+    c = client.post("/api/todos", json={"title": "c"}).json()
+
+    res = client.put("/api/todos/reorder", json={"ids": [c["id"], a["id"], b["id"]]})
+    assert res.status_code == 200
+    assert [t["title"] for t in res.json()] == ["c", "a", "b"]
+    # Order persists on a fresh list call.
+    assert [t["title"] for t in client.get("/api/todos").json()] == ["c", "a", "b"]
+
+
+def test_reorder_rejects_mismatched_ids(client):
+    a = client.post("/api/todos", json={"title": "a"}).json()
+    assert client.put("/api/todos/reorder", json={"ids": [a["id"], 999]}).status_code == 400

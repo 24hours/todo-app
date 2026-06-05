@@ -58,10 +58,65 @@ h1 {
   gap: 0.5rem;
 }
 
+.grip {
+  color: #ccc;
+  cursor: grab;
+  user-select: none;
+  font-size: 1rem;
+}
+
+.tag-wrap {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.tag {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.color-popup {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(5, 22px);
+  gap: 0.4rem;
+  padding: 0.5rem;
+  background: white;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.color-popup .swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.color-popup .swatch.selected {
+  border-color: #1a1a1a;
+}
+
+.list li.dragging {
+  opacity: 0.5;
+}
+
 .list li {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
   background: white;
   padding: 0.7rem 0.9rem;
   border-radius: 8px;
