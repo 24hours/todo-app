@@ -10,20 +10,19 @@ from pydantic import BaseModel
 
 DB_PATH = Path(__file__).parent / "todos.db"
 
-# 10 hardcoded tag colors. The first is the default for new todos.
+# Expanded palette: 11 hues x 5 shades (light -> dark) = 55 colors.
+# Laid out so the frontend can render it as a 5-row x 11-column grid.
+# Must stay in sync with frontend/src/App.jsx COLORS.
 COLORS = [
-    "#ef4444",  # red
-    "#f97316",  # orange
-    "#eab308",  # yellow
-    "#22c55e",  # green
-    "#14b8a6",  # teal
-    "#3b82f6",  # blue
-    "#6366f1",  # indigo
-    "#a855f7",  # purple
-    "#ec4899",  # pink
-    "#6b7280",  # gray
+    # red          orange       amber        yellow       green        teal         sky          blue         indigo       purple       pink
+    "#fca5a5",   "#fdba74",   "#fcd34d",   "#fde68a",   "#86efac",   "#5eead4",   "#7dd3fc",   "#93c5fd",   "#a5b4fc",   "#d8b4fe",   "#f9a8d4",  # 200
+    "#f87171",   "#fb923c",   "#fbbf24",   "#facc15",   "#4ade80",   "#2dd4bf",   "#38bdf8",   "#60a5fa",   "#818cf8",   "#c084fc",   "#f472b6",  # 400
+    "#ef4444",   "#f97316",   "#f59e0b",   "#eab308",   "#22c55e",   "#14b8a6",   "#0ea5e9",   "#3b82f6",   "#6366f1",   "#a855f7",   "#ec4899",  # 500
+    "#dc2626",   "#ea580c",   "#d97706",   "#ca8a04",   "#16a34a",   "#0d9488",   "#0284c7",   "#2563eb",   "#4f46e5",   "#9333ea",   "#db2777",  # 600
+    "#991b1b",   "#9a3412",   "#92400e",   "#854d0e",   "#166534",   "#115e59",   "#075985",   "#1e40af",   "#3730a3",   "#6b21a8",   "#9d174d",  # 800
 ]
-DEFAULT_COLOR = COLORS[0]
+# Keep the previous default (#ef4444 red-500) so existing rows and tests stay valid.
+DEFAULT_COLOR = "#ef4444"
 
 # Initialize Sentry before the app is created so the FastAPI integration
 # (auto-enabled) can hook into the ASGI lifecycle. DSN is overridable via env.
