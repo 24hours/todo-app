@@ -107,7 +107,7 @@ export default function App() {
   async function onDrop() {
     setDragId(null);
     const ids = todos.map((t) => t.id);
-    const res = await fetch(`${API}/reorders`, {
+    const res = await fetch(`${API}/reorder`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids }),
