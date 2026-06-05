@@ -133,7 +133,7 @@ export default function App() {
           placeholder="What needs doing?"
           autoFocus
         />
-        <button type="button" onClick={submitTodo}>Add</button>
+        <button type="submit">Add</button>
       </form>
 
       <ul className="list">
