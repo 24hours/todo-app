@@ -1,14 +1,13 @@
+# Secrets / credentials
+.env
+.env.*
+
+# Local runtime state (bot + sentry poller)
+.gh_bot_sessions.json
+.sentry_poller_state.json
+
 # Python
 __pycache__/
 *.pyc
 .venv/
 venv/
-*.db
-
-# Node
-node_modules/
-dist/
-.vite/
-
-# Editor / OS
-.DS_Store
